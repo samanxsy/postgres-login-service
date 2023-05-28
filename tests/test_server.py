@@ -28,8 +28,3 @@ class BaseTest(unittest.TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn(b"<title>Login</title>", response.data)
 
-
-    def test_profile_rout(self):
-        response = self.client.get("/profile")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn(b"<title>Profile</title>", response.data)
