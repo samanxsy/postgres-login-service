@@ -1,6 +1,7 @@
 import os
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, request, redirect, session, url_for
 from flask_talisman import Talisman
+from . import postgres
 
 
 app = Flask("LoginSystem", static_folder='./app/static', template_folder='./app/templates')
@@ -34,28 +35,68 @@ def home():
     return redirect("/signup")
 
 
-@app.route("/signup")
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
     """
     Sign Up Portal
     """
 
+    # Receiving the values
+    if request.method == "POST":
+        first_name = request.form.get("first_name")
+        last_name = request.form.get("last_name")
+        email = request.form.get("email")
+        username = request.form.get("username")
+        password = request.form.get("password")
+        date_of_birth = request.form.get("date_of_birth")
+
+        if username:
+            postgres.register_user(
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                username=username,
+                password=password,
+                date_of_birth=date_of_birth
+            )
+            return redirect("/login")
+
     return render_template("signup.html")
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
     """
     Login Portal
     """
+    if request.method == "POST":
+        # Receiving the Values
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        # Validating the credentials
+        if username:
+            if postgres.user_data_retrieval(
+                username=username,
+                password=password
+            ):
+                session["username"] = username
+                return redirect(url_for("profile", username=username))
+
+            else:
+                error_message = "Invalid username or password"
+                return render_template("login.html", error_message=error_message)
 
     return render_template("login.html")
 
 
-@app.route("/profile")
-def profile():
+@app.route("/profile/<username>")
+def profile(username):
     """
     Users Profile Timeline
     """
 
-    return render_template("profile.html")
+    if "username" in session and session["username"] == username:
+        return render_template("profile.html", username=username)
+
+    return redirect("/login")
