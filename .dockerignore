@@ -1,0 +1,10 @@
+**/__pycache__
+**/tests
+**/*_test.py
+**/.venv
+**/.pytest_cache
+setup.cfg
+.coverage
+.gitignore
+README.md
+LICENSE
