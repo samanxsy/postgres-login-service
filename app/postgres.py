@@ -3,9 +3,14 @@ import psycopg2
 import hashlib
 
 
+# Postgres service IP addresses from Kubernetes 
+postgres_host = os.environ.get("POSTGRES_HOST")
+postgres_port = os.environ.get("POSTGRES_PORT")
+
+
 connection = psycopg2.connect(
-    host="127.0.0.1",
-    port="5432",
+    host=postgres_host,
+    port=postgres_port,
     dbname="postgres",
     user="postgres",
     password=os.environ.get("POSTGRES_PASSWORD")

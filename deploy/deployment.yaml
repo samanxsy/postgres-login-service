@@ -1,22 +1,73 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: <the-app-name>
+  name: LoginSystem
 spec:
+  replicas: 2
   selector:
     matchLabels:
-      app: <the-app-name>
+      app: LoginSystem
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   template:
     metadata:
       labels:
-        app: <the-app-name
+        app: LoginSystem
     spec:
       containers:
-      - name: <the-app-name>
-        image: <Image>
+      - name: LoginSystem
+        image: <dockerhub-username>/flask-app:<image-tag>
         resources:
           limits:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: <Port>
+        - containerPort: 8000
+        env:
+        - name: POSTGRES_HOST
+          value: postgres-service
+        - name: POSTGRES_PORT
+          value: "5434"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-db
+  template:
+    metadata:
+      labels:
+        app: postgres-db
+    spec:
+      containers:
+        - name: postgres-db
+          image: <dockerhub-username>/postgres-db:<image-tag>
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 5434
+          env:
+            - name: POSTGRES_PASSWORD
+              value: $POSTGRES_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  selector:
+    app: postgres-db
+  ports:
+  - protocol: TCP
+    port: 5434
+    targetPort: 5434
