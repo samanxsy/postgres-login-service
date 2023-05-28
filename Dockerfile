@@ -1,6 +1,6 @@
-FROM <image-name>
+FROM python:3.10-alpine
 
-WORKDIR /<directory-name>
+WORKDIR /login-system
 
 COPY requirements.txt .
 
@@ -10,7 +10,7 @@ COPY .dockerignore /
 
 COPY ./app ./app
 
-ENV API_KEY=<$The_API_KEY>
+ENV SESSION_KEY=$SESSION_KEY
 
 CMD ["gunicorn", "--bind=0.0.0.0:8000", "app.server:app"]
 
