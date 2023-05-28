@@ -1,1 +1,2 @@
 # Login System with Flask and Postgres
+[![CI](https://github.com/samanxsy/Watson_Translator/actions/workflows/CI.yaml/badge.svg)](https://github.com/samanxsy/postgres-user-login/actions/workflows/ci.yaml)
