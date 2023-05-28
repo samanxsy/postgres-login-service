@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, session
 from flask_talisman import Talisman
+import psycopg2
+import hashlib
 
 
 app = Flask("YourO News", static_folder='./app/static', template_folder='./app/templates')
