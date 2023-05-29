@@ -3,7 +3,7 @@
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-brown.svg)](https://shields.io/)
 [![License](https://img.shields.io/badge/License-MIT-skyblue.svg)](https://mit-license.org/)
 
-A Login service created using Python, and PostgreSQL as database.
+A Login service created using Python, and PostgreSQL as database. Still Under development
 
 ## Features
 - User Registration and Login functionality
