@@ -59,7 +59,8 @@ def signup():
                 password=password,
                 date_of_birth=date_of_birth
             )
-            return redirect("/login")
+            success_message = "Account created Successfully! Tap Login Here."
+            return render_template("signup.html", success_message=success_message)
 
     return render_template("signup.html")
 

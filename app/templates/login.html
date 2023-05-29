@@ -18,6 +18,7 @@
       </div>
     
       <div class="login-panel">
+        <p>{{error_message}}</p>
         <form method="POST"> 
           <input class="username" type="text" name="username" id="username" placeholder="Username" required>
           <input class="password" type="password" name="password" id="password" placeholder="Password" required>
@@ -30,7 +31,6 @@
        <p>
         Don't have an account yet? <a href="/signup">Creat an account here</a>
        </p>
-       <p>{{error_message}}</p>
     </div>
   </body>
 </html>
