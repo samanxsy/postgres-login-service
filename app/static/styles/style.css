@@ -71,3 +71,12 @@ body {
     color: rgb(194, 247, 198);
   }
   
+  h3{
+    text-align: center;
+  }
+
+  .users_profile{
+    display: flex;
+    max-width: 800px;
+  }
+  

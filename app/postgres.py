@@ -3,43 +3,13 @@ import psycopg2
 import hashlib
 
 
-# Postgres service IP addresses from Kubernetes
-
 connection = psycopg2.connect(
-    host="127.0.0.1",
+    host="db",
     port=5432,
     dbname="postgres",
     user="postgres",
     password=os.environ.get("POSTGRES_PASSWORD")
 )
-
-
-def create_database():
-    """
-    This function will create the database IF it does not already exist
-    """
-    try:
-        cursor = connection.cursor()
-        # Creating The Table
-        cursor.execute(
-            """CREATE TABLE IF NOT EXISTS users (
-                id BIGSERIAL PRIMARY KEY NOT NULL,
-                first_name VARCHAR(255) NOT NULL,
-                last_name VARCHAR(255) NOT NULL,
-                email VARCHAR(255) UNIQUE NOT NULL,
-                username VARCHAR(255) UNIQUE NOT NULL,
-                password VARCHAR(255) NOT NULL,
-                date_of_birth DATE NOT NULL
-            )"""
-        )
-        connection.commit()
-        print("Database Created Succussfully")
-
-    except psycopg2.Error:
-        print("An error occured during database creation")
-
-    finally:
-        cursor.close()
 
 
 def register_user(first_name, last_name, email, username, password, date_of_birth):
@@ -85,3 +55,31 @@ def user_data_retrieval(username, password):
             WHERE username = %s AND password = %s""", (username, hashed_pass)
         )
         return cursor.fetchone()
+
+# # DATABASE CREATION FUNCTION
+#def create_database():
+#    """
+#    This function will create the database IF it does not already exist
+#    """
+#    try:
+#        cursor = connection.cursor()
+#        # Creating The Table
+#        cursor.execute(
+#            """CREATE TABLE IF NOT EXISTS users (
+#                id BIGSERIAL PRIMARY KEY NOT NULL,
+#                first_name VARCHAR(255) NOT NULL,
+#                last_name VARCHAR(255) NOT NULL,
+#                email VARCHAR(255) UNIQUE NOT NULL,
+#                username VARCHAR(255) UNIQUE NOT NULL,
+#                password VARCHAR(255) NOT NULL,
+#                date_of_birth DATE NOT NULL
+#            )"""
+#        )
+#        connection.commit()
+#        print("Database Created Succussfully")
+#
+#    except psycopg2.Error:
+#        print("An error occured during database creation")
+#
+#    finally:
+#        cursor.close()

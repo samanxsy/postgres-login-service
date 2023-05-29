@@ -1,0 +1,28 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    networks:
+      - loginnet
+    environment:
+      - SESSION_KEY=$SESSION_KEY
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile-postgres
+    ports:
+      - 5434:5432
+    networks:
+      - loginnet
+    environment:
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+networks:
+  loginnet:
