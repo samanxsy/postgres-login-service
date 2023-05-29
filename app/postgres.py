@@ -56,8 +56,8 @@ def user_data_retrieval(username, password):
         )
         return cursor.fetchone()
 
-# # DATABASE CREATION FUNCTION
-#def create_database():
+# DATABASE CREATION FUNCTION
+# def create_database():
 #    """
 #    This function will create the database IF it does not already exist
 #    """

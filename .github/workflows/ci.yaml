@@ -12,7 +12,7 @@ jobs:
     container: python:3.10-alpine
 
     env:
-      API_KEY: ${{ secrets.API_KEY }}
+      SESSION_KEY: ${{ secrets.SESSION_KEY }}
 
     services:
       postgres: 
@@ -39,11 +39,11 @@ jobs:
 
       - name: Run unit tests with pytest
         run: |
-          export API_KEY=$API_KEY
+          export SESSION_KEY=$SESSION_KEY
           pytest
 
       - name: Lint with flake8
-        run: flake8 --filename=server.py app/
+        run: flake8 --filename=*.py app/
 
         env: 
           DATABASE_URI: "postgresql://postgres:pgs3cr3t@postgres:5432/testdb"
