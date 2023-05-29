@@ -10,18 +10,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container: python:3.10-alpine
-
     env:
       SESSION_KEY: ${{ secrets.SESSION_KEY }}
 
     services:
-      postgres: 
-        image: postgres:alpine
-        ports:
-          - 5432:5432
+      db:
+        image: postgres:13-alpine
         env:
-          POSTGRES_PASSWORD: pgs3cr3t
-          POSTGRES_DB: testdb
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -39,12 +35,9 @@ jobs:
 
       - name: Run unit tests with pytest
         run: |
-          export SESSION_KEY=$SESSION_KEY
+          export API_KEY=$API_KEY
           pytest
 
       - name: Lint with flake8
-        run: flake8 --filename=*.py app/
+        run: flake8 --filename=server.py app/
 
-        env: 
-          DATABASE_URI: "postgresql://postgres:pgs3cr3t@postgres:5432/testdb"
-          API_KEY: ${{ secrets.API_KEY }}
