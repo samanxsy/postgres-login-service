@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: LoginSystem
+  name: login-system
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: LoginSystem
+      app: login-system
   minReadySeconds: 10
   strategy:
     type: RollingUpdate
@@ -16,11 +16,11 @@ spec:
   template:
     metadata:
       labels:
-        app: LoginSystem
+        app: login-system
     spec:
       containers:
-      - name: LoginSystem
-        image: <dockerhub-username>/flask-app:<image-tag>
+      - name: login-system
+        image: samanxsy/postgres-login-system:login-portal
         resources:
           limits:
             memory: "128Mi"
@@ -49,7 +49,7 @@ spec:
     spec:
       containers:
         - name: postgres-db
-          image: <dockerhub-username>/postgres-db:<image-tag>
+          image: samanxsy/postgres-login-system:postgres
           resources:
             limits:
               memory: "128Mi"
@@ -69,5 +69,5 @@ spec:
     app: postgres-db
   ports:
   - protocol: TCP
-    port: 5434
+    port: 5432
     targetPort: 5434

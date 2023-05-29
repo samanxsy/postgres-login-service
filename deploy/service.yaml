@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: LoginSystem
+  name: login-system
 spec:
-  type: LoadBalancer # Change the service in case of different needs
+  type: LoadBalancer
   selector:
-    app: LoginSystem
+    app: login-system
   ports:
   - protocol: TCP
     port: 80
