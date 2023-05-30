@@ -1,60 +1,101 @@
 import os
 import psycopg2
+import psycopg2.errors
 import hashlib
 
 
-connection = psycopg2.connect(
-    host="db",
-    port=5432,
-    dbname="postgres",
-    user="postgres",
-    password=os.environ.get("POSTGRES_PASSWORD")
-)
+def database_connection():
+    """
+    Establishes a connection to the PostgreSQL database.
+    """
+    connection = psycopg2.connect(
+        host="127.0.0.1",
+        port=5432,
+        dbname="postgres",
+        user="postgres",
+        password=os.environ.get("POSTGRES_PASSWORD")
+    )
+
+    return connection
+
+
+def hash_password(password, salt):
+    """
+    Hashes the provided password using SHA-256 algorithm with salting.
+    """
+    hashed_pass = hashlib.pbkdf2_hmac(
+        "sha256", password.encode(), salt.encode(), 100000
+    ).hex()
+
+    return hashed_pass
 
 
 def register_user(first_name, last_name, email, username, password, date_of_birth):
     """
     This function will take user data, hashes the password, and registers the data in the postgres database
     """
+    salt = str(os.urandom(16).hex())
+    hashed_pass = hash_password(password, salt)
 
-    # Hashing the password
-    hashed_pass = hashlib.sha256(password.encode()).hexdigest()
-
+    connection = database_connection()
     cursor = connection.cursor()
+
     try:
         cursor.execute(
-            """INSERT INTO users (first_name, last_name, email, username, password, date_of_birth)
-            VALUES (%s, %s, %s, %s, %s, %s)""", (first_name, last_name, email, username, hashed_pass, date_of_birth)
+            """INSERT INTO users (first_name, last_name, email, username, password, salt, date_of_birth)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)""", (first_name, last_name, email, username, hashed_pass, salt, date_of_birth)
             )
         connection.commit()
 
     except psycopg2.errors.UniqueViolation as error:
         if "email" in str(error):
-            return "A user with this email has already been registrated"
+            print("A user with this email has already been registrated")
 
         elif "username" in str(error):
-            return "The Username is taken"
+             print("The Username is taken")
 
     except psycopg2.Error:
-        return "Something happened during singing up, Try Again later"
+        print("Something happened during singing up, Try Again later")
 
     finally:
         cursor.close()
+        connection.close()
 
 
 def user_data_retrieval(username, password):
     """
     This function will take username and password as arguments, and returns True if the data matches with the databasee
     """
-    if password:
-        hashed_pass = hashlib.sha256(password.encode()).hexdigest()
+    connection = database_connection()
+    cursor = connection.cursor()
 
-        cursor = connection.cursor()
-        cursor.execute(
-            """SELECT * FROM users
-            WHERE username = %s AND password = %s""", (username, hashed_pass)
-        )
-        return cursor.fetchone()
+    cursor.execute(
+        """SELECT * FROM users
+        WHERE username = %s""", (username,)
+    )
+    result = cursor.fetchone()
+
+    if result:
+        stored_hashed_pass = result[5]
+        salt = result[6]
+
+        hashed_pass = hash_password(password, salt)
+
+        if stored_hashed_pass == hashed_pass:
+            cursor.execute(
+                """SELECT * FROM users
+                WHERE username = %s AND password = %s""", (username, hashed_pass)
+            )
+            user_data = cursor.fetchone()
+            cursor.close()
+            connection.close()
+
+            return user_data
+
+    cursor.close()
+    connection.close()
+
+    return None
 
 # DATABASE CREATION FUNCTION
 # def create_database():
@@ -72,6 +113,7 @@ def user_data_retrieval(username, password):
 #                email VARCHAR(255) UNIQUE NOT NULL,
 #                username VARCHAR(255) UNIQUE NOT NULL,
 #                password VARCHAR(255) NOT NULL,
+#                salt VARCHAR(255) NOT NULL,
 #                date_of_birth DATE NOT NULL
 #            )"""
 #        )
