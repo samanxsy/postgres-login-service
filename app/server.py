@@ -10,6 +10,7 @@ app = Flask("LoginSystem", static_folder='./app/static', template_folder='./app/
 app.secret_key = os.environ.get("SESSION_KEY")
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
 
+
 csp = {
     'default-src': '\'self\'',
     'img-src': '*',
