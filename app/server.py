@@ -1,4 +1,5 @@
 import os
+import psycopg2.errors
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_talisman import Talisman
 from . import postgres
@@ -51,16 +52,30 @@ def signup():
         date_of_birth = request.form.get("date_of_birth")
 
         if username:
-            postgres.register_user(
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-                username=username,
-                password=password,
-                date_of_birth=date_of_birth
-            )
-            success_message = "Account created Successfully! Tap Login Here."
-            return render_template("signup.html", success_message=success_message)
+            try: 
+                postgres.register_user(
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                    username=username,
+                    password=password,
+                    date_of_birth=date_of_birth
+                )
+                success_message = "Account created Successfully! Tap Login Here."
+                return render_template("signup.html", success_message=success_message)
+
+            except psycopg2.errors.UniqueViolation as error:
+                if "email" in str(error):
+                    error_message = "A user with this email has already been registrated."
+                    return render_template("signup.html", error_message=error_message)
+
+                elif "username" in str(error):
+                    error_message = "Username already Taken."
+                    return render_template("signup.html", error_message=error_message)
+
+            except psycopg2.Error:
+                    error_message = "Something happened during singing up, Try Again later"
+                    return render_template("signup.html", error_message=error_message)
 
     return render_template("signup.html")
 

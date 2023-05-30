@@ -40,26 +40,14 @@ def register_user(first_name, last_name, email, username, password, date_of_birt
     connection = database_connection()
     cursor = connection.cursor()
 
-    try:
-        cursor.execute(
-            """INSERT INTO users (first_name, last_name, email, username, password, salt, date_of_birth)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)""", (first_name, last_name, email, username, hashed_pass, salt, date_of_birth)
-            )
-        connection.commit()
+    cursor.execute(
+        """INSERT INTO users (first_name, last_name, email, username, password, salt, date_of_birth)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)""", (first_name, last_name, email, username, hashed_pass, salt, date_of_birth)
+        )
+    connection.commit()
 
-    except psycopg2.errors.UniqueViolation as error:
-        if "email" in str(error):
-            print("A user with this email has already been registrated")
-
-        elif "username" in str(error):
-             print("The Username is taken")
-
-    except psycopg2.Error:
-        print("Something happened during singing up, Try Again later")
-
-    finally:
-        cursor.close()
-        connection.close()
+    cursor.close()
+    connection.close()
 
 
 def user_data_retrieval(username, password):
