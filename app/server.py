@@ -2,11 +2,13 @@ import os
 import psycopg2.errors
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_talisman import Talisman
+from datetime import timedelta
 from . import postgres
 
 
 app = Flask("LoginSystem", static_folder='./app/static', template_folder='./app/templates')
 app.secret_key = os.environ.get("SESSION_KEY")
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
 
 csp = {
     'default-src': '\'self\'',
@@ -115,4 +117,13 @@ def profile(username):
     if "username" in session and session["username"] == username:
         return render_template("profile.html", username=username)
 
+    return redirect("/login")
+
+
+@app.route("/logout")
+def logout():
+    """
+    Logout functionality to clear session data
+    """
+    session.clear()
     return redirect("/login")
