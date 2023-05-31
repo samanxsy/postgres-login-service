@@ -15,6 +15,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install Docker Compose
+        run: |
+          apk add --no-cache docker-compose
+
       - name: Build and run Docker Compose
         run: docker-compose build && docker-compose up
 
