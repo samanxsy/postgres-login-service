@@ -10,6 +10,8 @@ COPY .dockerignore /
 
 COPY ./app ./app
 
+COPY ./tests ./tests
+
 ENV SESSION_KEY=$SESSION_KEY
 
 CMD ["gunicorn", "--bind=0.0.0.0:8000", "app.server:app"]
