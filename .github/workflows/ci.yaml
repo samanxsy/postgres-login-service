@@ -31,7 +31,7 @@ jobs:
 
       - name: Wait for PostgreSQL
         run: |
-          until nc -zv localhost 5432; do sleep 5; done
+          until nc -zv db 5432; do sleep 5; done
 
       - name: Install dependencies
         run: |
