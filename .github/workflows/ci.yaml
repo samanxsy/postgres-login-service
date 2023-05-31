@@ -6,33 +6,31 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    services:
-      db:
-        image: postgres:13-alpine
-        env:
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+    container: python:3.10-alpine
+    env:
+      SESSION_KEY: ${{ secrets.SESSION_KEY }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Build and run Docker Compose
+        run: docker-compose build && docker-compose up
+
+      - name: Wait for PostgreSQL
+        run: |
+          until nc -zv localhost 5432; do sleep 5; done
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel
           python -m pip install -r requirements.txt
 
-      - name: Wait for PostgreSQL
-        run: |
-          until nc -zv db 5432; do sleep 3; done
-
-      - name: Initialize PostgreSQL database
-        run: |
-          docker exec -it db psql -U postgres -d postgres -a -f /docker-entrypoint-initdb.d/init.sql
-
       - name: Run unit tests with pytest
         run: |
+          export SESSION_KEY=$SESSION_KEY
           pytest
 
       - name: Lint with flake8
-        run: flake8 --filename=*.py app/
+        run: flake8 --filename=server.py app/
