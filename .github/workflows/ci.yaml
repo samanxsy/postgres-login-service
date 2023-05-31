@@ -38,8 +38,11 @@ jobs:
 
       - name: Run unit tests with pytest
         run: |
+          sleep 10  # Waiting for the system to be ready
           container_id=$(docker ps --filter "name=postgres-login-service_app_1" --format "{{.ID}}")
           docker exec $container_id pytest
 
       - name: Lint with flake8
-        run: flake8 --filename=server.py app/
+        run: |
+          pip install flake8
+          flake8 --filename=server.py app/
