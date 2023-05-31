@@ -11,10 +11,13 @@ jobs:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
     services:
-      db:
+      postgres: 
         image: postgres:13-alpine
+        ports:
+          - 5432:5432
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: db
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -37,7 +40,8 @@ jobs:
       - name: Run unit tests with pytest
         run: |
           export SESSION_KEY=$SESSION_KEY
-          export POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+          export POSTGRES_PASSWORD=$
+          pytest
 
       - name: Lint with flake8
         run: flake8 --filename=server.py app/
