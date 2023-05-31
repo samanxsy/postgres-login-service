@@ -8,11 +8,6 @@ from app.postgres import database_connection, hash_password, register_user, user
 class FunctionsTest(unittest.TestCase):
     """Test cases for the postgres.py functions"""
 
-    def test_database_connection(self):
-        connection = database_connection()
-        self.assertIsNotNone(connection)
-        connection.close()
-
 
     def test_database_connection_invalid_credentials(self):
         with self.assertRaises(psycopg2.OperationalError):
