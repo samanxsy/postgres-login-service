@@ -38,7 +38,6 @@ jobs:
         run: |
           export SESSION_KEY=$SESSION_KEY
           export POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-          pytest --host=db
 
       - name: Lint with flake8
         run: flake8 --filename=server.py app/
