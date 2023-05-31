@@ -12,6 +12,8 @@ COPY ./app ./app
 
 COPY ./tests ./tests
 
+COPY setup.cfg ./
+
 ENV SESSION_KEY=$SESSION_KEY
 
 CMD ["gunicorn", "--bind=0.0.0.0:8000", "app.server:app"]
