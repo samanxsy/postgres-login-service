@@ -35,6 +35,8 @@ jobs:
 
       - name: Run unit tests with pytest
         run: |
+          export SESSION_KEY=$SESSION_KEY
+          export POSTGRES_PASSWORD=$POSTGRES_PASSWORD
           container_id=$(docker ps --filter "name=postgres-login-service_app_1" --format "{{.ID}}")
           docker exec $container_id pytest
 
