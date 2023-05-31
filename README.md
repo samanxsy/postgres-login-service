@@ -36,3 +36,5 @@ The applications configuration can be modified through the environment variables
 ```
 export SESSION_KEY=<random-value>
 ```
+
+checking CI-1
