@@ -20,7 +20,7 @@ jobs:
           apk add --no-cache docker-compose
 
       - name: Build and run Docker Compose
-        run: docker-compose build && docker-compose up
+        run: docker-compose up -d --build
 
       - name: Wait for PostgreSQL
         run: |
