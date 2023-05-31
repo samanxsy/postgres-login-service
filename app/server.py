@@ -55,7 +55,7 @@ def signup():
         date_of_birth = request.form.get("date_of_birth")
 
         if username:
-            try: 
+            try:
                 postgres.register_user(
                     first_name=first_name,
                     last_name=last_name,
@@ -77,8 +77,8 @@ def signup():
                     return render_template("signup.html", error_message=error_message)
 
             except psycopg2.Error:
-                    error_message = "Something happened during singing up, Try Again later"
-                    return render_template("signup.html", error_message=error_message)
+                error_message = "Something happened during singing up, Try Again later"
+                return render_template("signup.html", error_message=error_message)
 
     return render_template("signup.html")
 

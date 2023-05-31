@@ -9,7 +9,7 @@ def database_connection():
     Establishes a connection to the PostgreSQL database.
     """
     connection = psycopg2.connect(
-        host="127.0.0.1",
+        host="db",
         port=5432,
         dbname="postgres",
         user="postgres",
@@ -38,7 +38,6 @@ def register_user(first_name, last_name, email, username, password, date_of_birt
     input = [first_name, last_name, email, username, password, date_of_birth]
     if any(value == "" for value in input):
         raise psycopg2.errors.NotNullViolation("Fields cannot be empty")
-
 
     salt = str(os.urandom(16).hex())
     hashed_pass = hash_password(password, salt)
