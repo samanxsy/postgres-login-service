@@ -9,7 +9,7 @@ def database_connection():
     Establishes a connection to the PostgreSQL database.
     """
     connection = psycopg2.connect(
-        host="db",
+        host="127.0.0.1",
         port=5432,
         dbname="postgres",
         user="postgres",
@@ -34,6 +34,12 @@ def register_user(first_name, last_name, email, username, password, date_of_birt
     """
     This function will take user data, hashes the password, and registers the data in the postgres database
     """
+    # Forcing NOT NULL constraint for all
+    input = [first_name, last_name, email, username, password, date_of_birth]
+    if any(value == "" for value in input):
+        raise psycopg2.errors.NotNullViolation("Fields cannot be empty")
+
+
     salt = str(os.urandom(16).hex())
     hashed_pass = hash_password(password, salt)
 
@@ -84,6 +90,23 @@ def user_data_retrieval(username, password):
     connection.close()
 
     return None
+
+
+def delete_user(username):
+    """
+    This function deletes the user from database
+    """
+    connection = database_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """DELETE FROM users
+        WHERE username = %s""", (username,)
+    )
+    connection.commit()
+    cursor.close()
+    connection.close()
+
 
 # DATABASE CREATION FUNCTION
 # def create_database():

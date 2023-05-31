@@ -1,52 +1,88 @@
 import unittest
-from unittest import mock
-from app import postgres
+import psycopg2
+import psycopg2.errors
+import datetime
+from app.postgres import database_connection, hash_password, register_user, user_data_retrieval, delete_user
 
-class PostgresTestCase(unittest.TestCase):
 
-    @mock.patch('app.postgres.connection')
-    def test_register_user(self, mock_connection):
-        # Mock the connection object and cursor
-        mock_cursor = mock_connection.cursor.return_value
+class FunctionsTest(unittest.TestCase):
 
-        # Test case 1: Register a new user
-        postgres.register_user("Saman", "xsy", "Saman@example.com", "Samanxsy", "password123", "1990-01-01")
-        mock_cursor.execute.assert_called_once()
+    def test_database_connection(self):
+        connection = database_connection()
+        self.assertIsNotNone(connection)
+        connection.close()
 
-        # Test case 2: Register a user with an existing email
-        mock_cursor.execute.reset_mock()
-        mock_cursor.execute.side_effect = [Exception('A user with this email has already been registered')]
 
-        with self.assertRaises(Exception) as context:
-            postgres.register_user("Jane", "Smith", "Saman@example.com", "janesmith", "password456", "1992-02-02")
+    def test_database_connection_invalid_credentials(self):
+        with self.assertRaises(psycopg2.OperationalError):
+            connection = psycopg2.connect(
+                host="127.0.0.1",
+                port=5432,
+                dbname="postgres",
+                user="invalid_user",
+                password="invalid_password"
+            )
+            connection.close()
 
-        self.assertEqual(str(context.exception), 'A user with this email has already been registered')
-        mock_cursor.execute.assert_called_once()
 
-        # Test case 3: Register a user with an existing username
-        mock_cursor.execute.reset_mock()
-        mock_cursor.execute.side_effect = [Exception('The Username is taken')]
+    def test_hash_password(self):
+        password = "aVerySecurePasswordIs=123456"
+        salt = "somesalt"
+        hashed_pass = hash_password(password, salt)
+        self.assertIsNotNone(hashed_pass)
+        self.assertNotEqual(hashed_pass, password)
+        self.assertEqual(hash_password(password, salt), hashed_pass)
 
-        with self.assertRaises(Exception) as context:
-            postgres.register_user("Jane", "Smith", "jane@example.com", "Samanxsy", "password789", "1994-03-03")
 
-        self.assertEqual(str(context.exception), 'The Username is taken')
-        mock_cursor.execute.assert_called_once()
+    def test_register_user_success(self):
+        first_name = "Saman"
+        last_name = "Saybani"
+        email = "saman@saybani.com"
+        username = "samansaybani"
+        password = "passwordis123456"
+        date_of_birth = datetime.date(1995, 10, 23)
 
-    @mock.patch('app.postgres.connection')
-    def test_user_data_retrieval(self, mock_connection):
-        # Mock the connection object and cursor
-        mock_cursor = mock_connection.cursor.return_value
+        register_user(first_name, last_name, email, username, password, date_of_birth)
 
-        # Test case 1: Retrieve user data with valid credentials
-        mock_cursor.fetchone.return_value = ('Saman', 'xsy', 'Saman@example.com', 'Samanxsy', 'hashed_password', '1990-01-01')
-        user = postgres.user_data_retrieval("Samanxsy", "password123")
+        user_data = user_data_retrieval(username, password)
+        self.assertIsNotNone(user_data)
+        self.assertEqual(user_data[1], first_name)
+        self.assertEqual(user_data[2], last_name)
+        self.assertEqual(user_data[3], email)
+        self.assertEqual(user_data[4], username)
+        self.assertEqual(user_data[5], hash_password(password, user_data[6]))
+        self.assertEqual(user_data[7], date_of_birth)
 
-        self.assertEqual(user, ('Saman', 'xsy', 'Saman@example.com', 'Samanxsy', 'hashed_password', '1990-01-01'))
-        mock_cursor.execute.assert_called_once()
 
-        # Test case 2: Retrieve user data with invalid credentials
-        mock_cursor.fetchone.return_value = None
-        user = postgres.user_data_retrieval("Samanxsy", "wrongpassword")
+    def test_register_user_invalid_data(self):
+        with self.assertRaises(psycopg2.errors.NotNullViolation):
+            register_user("", "", "", "", "", "")
 
-        self.assertIsNone(user)
+
+    def test_user_data_retrieval_valid(self):
+
+        username = "samansaybani"
+        password = "passwordis123456"
+
+        user_data = user_data_retrieval(username, password)
+        self.assertIsNotNone(user_data)
+        self.assertEqual(user_data[4], username)
+        self.assertEqual(user_data[5], hash_password(password, user_data[6]))
+
+
+    def test_user_data_retrieval_invalid_credentials(self):
+        username = "johndoe"
+        password = "incorrect_password"
+
+        user_data = user_data_retrieval(username, password)
+        self.assertIsNone(user_data)
+
+
+    def test_delete_user(self):
+        username = "samansaybani"
+        password = "passwordis123456"
+
+        delete_user(username)
+
+        user_data = user_data_retrieval(username, password)
+        self.assertIsNone(user_data)
