@@ -95,6 +95,21 @@ class TestServer(unittest.TestCase):
         self.assertIn(b"<title>Login</title>", response.data)
 
 
+    def test_login_with_valid_credentials(self):
+        with self.client.session_transaction() as session:
+            session["username"] = "samanxsy"
+
+        response = self.client.get("/profile/samanxsy")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(b"<h3>Welcome back samanxsy!</h3>", response.data)
+
+
+    def test_profile_not_allowed(self):
+        response = self.client.get("/profile/rahilzz")
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.headers["Location"], "/login")
+
+
     def test_delete_user_cleanUp(self):
         username1 = "samanxsy"
         username2 = "somethingelse"
