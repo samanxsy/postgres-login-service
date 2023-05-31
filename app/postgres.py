@@ -11,8 +11,8 @@ def database_connection():
     connection = psycopg2.connect(
         host="db",
         port=5432,
-        dbname="postgres",
-        user="postgres",
+        dbname=os.environ.get("DB_NAME"),
+        user=os.environ.get("DB_USER"),
         password=os.environ.get("POSTGRES_PASSWORD")
     )
 

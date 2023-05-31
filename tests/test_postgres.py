@@ -1,3 +1,4 @@
+import os
 import unittest
 import psycopg2
 import psycopg2.errors
@@ -19,8 +20,10 @@ class FunctionsTest(unittest.TestCase):
             connection = psycopg2.connect(
                 host="db",
                 port=5432,
-                dbname="postgres",
+                dbname=os.environ.get("DB_NAME"),
+                # file deepcode ignore NoHardcodedCredentials/test: Invalid credential for testing purposes
                 user="invalid_user",
+                # file deepcode ignore NoHardcodedPasswords/test: Invalid credential for testing purposes
                 password="invalid_password"
             )
             connection.close()
