@@ -34,7 +34,7 @@ jobs:
           SESSION_KEY: ${{ secrets.SESSION_KEY }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
-        run: docker-compose build && docker-compose up
+        run: docker-compose up -d --build
 
       - name: Run unit tests with pytest
         run: |
