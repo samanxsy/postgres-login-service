@@ -9,7 +9,7 @@ def database_connection():
     Establishes a connection to the PostgreSQL database.
     """
     connection = psycopg2.connect(
-        host="db",
+        host="127.0.0.1",
         port=5432,
         dbname="postgres",
         user="postgres",
