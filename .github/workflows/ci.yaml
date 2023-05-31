@@ -15,10 +15,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install and run Docker Compose
-        run: |
-          apk add --no-cache docker-compose
-          docker-compose up -d --build
+      - name: Run Docker Compose
+        run:  docker-compose up -d
 
       - name: Wait for PostgreSQL
         run: |
