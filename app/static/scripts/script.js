@@ -1,4 +1,4 @@
-// Password Match Check
+/* Password Match Check
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('form').addEventListener('submit', function(event) {
       var password = document.getElementById('password').value;
@@ -10,3 +10,4 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
+*/
