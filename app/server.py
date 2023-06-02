@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, session, url_for
 from flask_talisman import Talisman
 from datetime import timedelta
 from . import postgres
+from .validator import PasswordValidator, valid_email, valid_username
 
 
 app = Flask("LoginSystem", static_folder='./app/static', template_folder='./app/templates')
@@ -52,9 +53,28 @@ def signup():
         email = request.form.get("email")
         username = request.form.get("username")
         password = request.form.get("password")
+        password_confirm = request.form.get("password_confirm")
         date_of_birth = request.form.get("date_of_birth")
 
+        if password:
+            if not PasswordValidator.is_strong(password):
+                error_message = "Password is not strong enough"
+                return render_template("signup.html", error_message=error_message)
+            elif password != password_confirm:
+                error_message = "Passwords do not match"
+                return render_template("signup.html", error_message=error_message)
+
+        if email:
+            if not valid_email(email):
+                error_message = "Email must have a correct format"
+                return render_template("signup.html", error_message=error_message)
+
         if username:
+            if not valid_username(username):
+                error_message = "The username is not valid"
+                return render_template("signup.html", error_message=error_message)
+
+        if all([first_name, last_name, email, username, password, date_of_birth]):
             try:
                 postgres.register_user(
                     first_name=first_name,
@@ -80,6 +100,10 @@ def signup():
                 error_message = "Something happened during singing up, Try Again later"
                 return render_template("signup.html", error_message=error_message)
 
+        else:
+            error_message = "All fields are required"
+            return render_template("signup.html", error_message=error_message)
+
     return render_template("signup.html")
 
 
@@ -94,7 +118,7 @@ def login():
         password = request.form.get("password")
 
         # Validating the credentials
-        if username:
+        if username and password:
             if postgres.user_data_retrieval(
                 username=username,
                 password=password
@@ -105,6 +129,9 @@ def login():
             else:
                 error_message = "Invalid username or password"
                 return render_template("login.html", error_message=error_message)
+        else:
+            error_message = "Username and Password are required"
+            return render_template("login.html", error_message=error_message)
 
     return render_template("login.html")
 

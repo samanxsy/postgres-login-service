@@ -14,7 +14,6 @@ class FunctionsTest(unittest.TestCase):
         self.assertIsNotNone(connection)
         connection.close()
 
-
     def test_database_connection_invalid_credentials(self):
         with self.assertRaises(psycopg2.OperationalError):
             connection = psycopg2.connect(
@@ -28,7 +27,6 @@ class FunctionsTest(unittest.TestCase):
             )
             connection.close()
 
-
     def test_hash_password(self):
         password = "aVerySecurePasswordIs=123456"
         salt = "somesalt"
@@ -36,7 +34,6 @@ class FunctionsTest(unittest.TestCase):
         self.assertIsNotNone(hashed_pass)
         self.assertNotEqual(hashed_pass, password)
         self.assertEqual(hash_password(password, salt), hashed_pass)
-
 
     def test_register_user_success(self):
         first_name = "Saman"
@@ -57,11 +54,9 @@ class FunctionsTest(unittest.TestCase):
         self.assertEqual(user_data[5], hash_password(password, user_data[6]))
         self.assertEqual(user_data[7], date_of_birth)
 
-
     def test_register_user_invalid_data(self):
         with self.assertRaises(psycopg2.errors.NotNullViolation):
             register_user("", "", "", "", "", "")
-
 
     def test_user_data_retrieval_valid(self):
 
@@ -73,14 +68,12 @@ class FunctionsTest(unittest.TestCase):
         self.assertEqual(user_data[4], username)
         self.assertEqual(user_data[5], hash_password(password, user_data[6]))
 
-
     def test_user_data_retrieval_invalid_credentials(self):
         username = "johndoe"
         password = "incorrect_password"
 
         user_data = user_data_retrieval(username, password)
         self.assertIsNone(user_data)
-
 
     def test_delete_user(self):
         username = "samansaybani"
