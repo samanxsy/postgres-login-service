@@ -348,8 +348,8 @@ class TestServer(unittest.TestCase):
             response = self.client.post("/signup",data=json.dumps({
                 "first_name": "Saman",
                 "last_name": "Saybani",
-                "email": "somegmail@gmail.com",
-                "username": "samanxsy",
+                "email": "new@gmail.com",
+                "username": "newuser",
                 "password": "12456%mM",
                 "password_confirm": "12456%mM",
                 "date_of_birth": date_of_birth.strftime('%Y-%m-%d')
@@ -357,19 +357,19 @@ class TestServer(unittest.TestCase):
 
             with self.app.test_request_context():
                 response = self.client.post("/login",data=json.dumps({
-                    "username": "samanxsy",
+                    "username": "newuser",
                     "password": "12456%mM"
                 }), content_type='application/json')
 
                 response_data = json.loads(response.data)
                 username = response_data.get("username")
-                self.assertEqual(username, "samanxsy")
+                self.assertEqual(username, "newuser")
                 status = response_data.get("status")
                 self.assertEqual(status, True)
 
                 with self.app.test_request_context():
                     response = self.client.post("/delete",data=json.dumps({
-                        "username": "samanxsy"
+                        "username": "newuser"
                     }), content_type='application/json')
 
                     response_data = json.loads(response.data)
@@ -453,7 +453,9 @@ class TestServer(unittest.TestCase):
         username2 = "somethingelse"
         username3 = "ausername"
         username4 = "samandev"
+        username5 = "newuser"
         delete_user(username1)
         delete_user(username2)
         delete_user(username3)
         delete_user(username4)
+        delete_user(username5)
