@@ -3,7 +3,7 @@ import unittest
 import psycopg2
 import psycopg2.errors
 import datetime
-from app.postgres import database_connection, hash_password, register_user, user_data_retrieval, delete_user
+from backend.postgres import database_connection, hash_password, register_user, user_data_retrieval, delete_user
 
 
 class FunctionsTest(unittest.TestCase):
