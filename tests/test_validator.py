@@ -1,5 +1,5 @@
 import unittest
-from app.validator import PasswordValidator, valid_email, valid_username
+from backend.validator import PasswordValidator, valid_email, valid_username
 
 
 class PasswordValidatorTests(unittest.TestCase):
