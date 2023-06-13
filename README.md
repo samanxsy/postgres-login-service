@@ -11,10 +11,11 @@
 - Secure password storage and hashing
 - Session management using Flask-session
 - PostgreSQL database integration for storing user information
+- Microservices architecture
 
 ## Prerequisites
 - Docker
-- Docker Compose
+- Docker-Compose
 - Postgres
 - Python
 
@@ -27,7 +28,7 @@
 ```
 git clone <repo-ssh/https-url>
 cd <project-directory>
-docker-compose build && docker compose up
+docker-compose up -d --build
 ```
 
 ## App view
