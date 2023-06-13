@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY .dockerignore /
 
-COPY ./app ./app
+COPY ./backend ./backend
 
 COPY ./tests ./tests
 
@@ -22,6 +22,6 @@ ENV DB_USER=$DB_USER
 
 ENV POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 
-CMD ["gunicorn", "--bind=0.0.0.0:8000", "app.server:app"]
+CMD ["gunicorn", "--bind=0.0.0.0:8000", "backend.server:app"]
 
 EXPOSE 8000
