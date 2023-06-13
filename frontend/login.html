@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Login</title>
+  
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="scripts/login.js"></script>
+    <link rel="stylesheet" href="styles/styles.css">
+  </head>
+
+  <body>
+    <div class="all"> 
+      <div class="header"> 
+        <h3>Welcome</h3>
+      </div>
+    
+      <div class="login-panel">
+        <p id="backend-message"></p>
+        <form id="login-form" method="POST"> 
+          <input class="username" type="text" id="username" placeholder="Username" required>
+          <input class="password" type="password" id="password" placeholder="Password" required>
+      </div>
+    
+      <div class="login-button">
+          <button class="button" type="submit">Login</button>
+      </div>
+       </form>
+       <p>
+        Don't have an account yet? <a href="/signup.html">Creat an account here</a>
+       </p>
+    </div>
+  </body>
+</html>

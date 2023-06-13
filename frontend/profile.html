@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Profile</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="scripts/profile.js"></script>
+    <link rel="stylesheet" href="styles/profile.css">
+  </head>
+  
+  <body>
+    <div class="header">
+      <a class="logout" href="/logout" class="logout">Logout</a>
+    <h3 id="welcome-message"></h3>
+    <h3 id="backend-message"></h3>
+    <p id="username"></p>
+  </div>
+
+  <div class="text-box">
+    <form method="POST">
+    <textarea id="post-box" maxlength="800" placeholder="What's up?">
+    </textarea>
+    </form>
+  </div>
+
+    <div class="profiile-content" id="profile-content"> </div>
+
+  </body>
+</html>
