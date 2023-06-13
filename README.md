@@ -1,10 +1,10 @@
-# Login Service with Flask, Postgres, and Docker
+# Login Service
 [![CI](https://github.com/samanxsy/postgres-user-login/actions/workflows/ci.yaml/badge.svg)](https://github.com/samanxsy/postgres-user-login/actions/workflows/ci.yaml)
 [![Known Vulnerabilities](https://snyk.io/test/github/samanxsy/postgres-login-service/badge.svg?style=flat-square)](https://snyk.io/test/github/samanxsy/postgres-login-service)
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-brown.svg)](https://shields.io/)
 [![License](https://img.shields.io/badge/License-MIT-skyblue.svg)](https://mit-license.org/)
 
-A Login service created using Python, and PostgreSQL as database. Under development
+## A Login Service developed as containerized microservices
 
 ## Features
 - User Registration and Login functionality
@@ -17,6 +17,11 @@ A Login service created using Python, and PostgreSQL as database. Under developm
 - Docker Compose
 - Postgres
 - Python
+
+## Architecture
+- **Frontend**: HTML,CSS,JavaScript | nginx
+- **Backend**: Python and Flask | python-alpine
+- **Database**: PostgreSQL | postgres-alpine
 
 ## Getting Started using Dockerfiles
 ```
