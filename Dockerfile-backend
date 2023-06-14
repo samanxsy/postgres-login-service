@@ -2,6 +2,12 @@ FROM python:3.10-alpine
 
 WORKDIR /login-system
 
+RUN apk update && apk add shadow
+
+RUN useradd -u 1004 pyuser
+
+RUN chown -R pyuser:pyuser /login-system
+
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
@@ -22,6 +28,8 @@ ENV DB_USER=$DB_USER
 
 ENV POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 
-CMD ["gunicorn", "--bind=0.0.0.0:8000", "backend.server:app"]
+USER pyuser
 
 EXPOSE 8000
+
+CMD ["gunicorn", "--bind=0.0.0.0:8000", "backend.server:app"]

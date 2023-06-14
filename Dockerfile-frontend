@@ -1,15 +1,26 @@
-FROM nginx:latest
-
-RUN apt update && \
-    apt install iputils-ping -y && apt install vim -y && \
-    apt install curl -y
+FROM nginx:alpine3.17
 
 WORKDIR /frontend
+
+RUN apk update && apk add shadow
+
+RUN useradd -u 1005 nginxuser
+
+# Creating necessary directories and files
+RUN mkdir -p /var/cache/nginx/client_temp &&  \
+    touch /var/run/nginx.pid
+
+# Granting necessary permissions to the `nginxuser`
+RUN chown -R nginxuser:nginxuser /var/cache/nginx /var/run && \
+    chown nginxuser:nginxuser /etc/nginx/nginx.conf &&  \
+    chown nginxuser:nginxuser /var/run/nginx.pid
 
 COPY frontend/ /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
+
+USER nginxuser
 
 CMD ["nginx", "-g", "daemon off;"]
