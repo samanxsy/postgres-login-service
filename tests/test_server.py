@@ -312,7 +312,11 @@ class TestServer(unittest.TestCase):
 
                     response_data = json.loads(response.data)
                     status = response_data.get("status")
+                    last_name = response_data.get("last_name")
+                    password = response_data.get("password")
                     self.assertEqual(status, True)
+                    self.assertEqual(last_name, "Saybani")
+                    self.assertNotEqual(password, "12456%mM")
 
     def test_auth_false_response(self):
         date_of_birth = datetime.date(1995, 10, 23)
