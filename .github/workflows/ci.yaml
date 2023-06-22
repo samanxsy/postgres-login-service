@@ -54,20 +54,41 @@ jobs:
           pip install flake8
           flake8 --filename=*.py backend/
 
-      - name: Metadata for Docker images
-        id: docker-meta
+      - name: Metadata for frintend image
+        id: frontend-meta
         uses: docker/metadata-action@v4
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         with:
           images: |
             Dockerfile-frontend
+          tags: |
+            $DOCKERHUB_USERNAME/postgres-login-system/frontend:latest
+            $DOCKERHUB_USERNAME/postgres-login-system/frontend:{{date 'YYYYMMDD'}}-{{sha}}
+
+      - name: Metadata for backend image
+        id: backend-meta
+        uses: docker/metadata-action@v4
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        with:
+          images: |
             Dockerfile-backend
+          tags: |
+            $DOCKERHUB_USERNAME/postgres-login-system/backend:latest
+            $DOCKERHUB_USERNAME/postgres-login-system/backend:{{date 'YYYYMMDD'}}-{{sha}}
+
+      - name: Metadata for database image
+        id: postgres-meta
+        uses: docker/metadata-action@v4
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        with:
+          images: |
             Dockerfile-postgres
           tags: |
-            $DOCKERHUB_USERNAME/postgres-login-system/frontend:{{date 'YYYYMMDD'}}-{{sha}}
-            $DOCKERHUB_USERNAME/postgres-login-system/backend:{{date 'YYYYMMDD'}}-{{sha}}
-            $DOCKERHUB_USERNAME/postgres-login-system/postgres:{{date 'YYYYMMDD'}}-{{sha}}
+            $DOCKERHUB_USERNAME/postgres-login-system/db:latest
+            $DOCKERHUB_USERNAME/postgres-login-system/db:{{date 'YYYYMMDD'}}-{{sha}}
 
       - name: DockerHub Login
         uses: docker/login-action@v2
@@ -81,7 +102,7 @@ jobs:
           file: Dockerfile-frontend
           context: .
           push: true
-          tags: ${{ steps.docker-meta.outputs.dockerfile-frontend }}
+          tags: ${{ steps.frontend-meta.outputs.tags }}
 
       - name: Build & Push the backend image
         uses: docker/build-push-action@v4
@@ -89,7 +110,7 @@ jobs:
           file: Dockerfile-backend
           context: .
           push: true
-          tags: ${{ steps.docker-meta.outputs.dockerfile-backend }}
+          tags: ${{ steps.backend-meta.outputs.tags }}
 
       - name: Build & Push the database image
         uses: docker/build-push-action@v4
@@ -97,4 +118,4 @@ jobs:
           file: Dockerfile-postgres
           context: .
           push: true
-          tags: ${{ steps.docker-meta.outputs.dockerfile-postgres }}
+          tags: ${{ steps.postgres-meta.outputs.tags }}
