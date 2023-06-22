@@ -54,13 +54,39 @@ jobs:
           pip install flake8
           flake8 --filename=*.py backend/
 
-      - name: Docker meta
-        id: meta
+      - name: Metadata for frontend tags
+        id: frontend-meta
         uses: docker/metadata-action@v4
         with:
           images: |
             Dockerfile-frontend
+          tags: |
+            type=raw,value=latest
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value={{date 'YYYYMMDD'}}-{{sha}}
+
+      - name: Metadata for backend tags
+        id: backend-meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
             Dockerfile-backend
+          tags: |
+            type=raw,value=latest
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value={{date 'YYYYMMDD'}}-{{sha}}
+
+      - name: Metadata for database tags
+        id: postgres-meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
             Dockerfile-postgres
           tags: |
             type=raw,value=latest
@@ -82,7 +108,7 @@ jobs:
           file: Dockerfile-frontend
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.frontend_tags }}
+          tags: ${{ steps.meta.outputs.frontend-meta }}
 
       - name: Build & Push the backend image
         uses: docker/build-push-action@v4
@@ -90,7 +116,7 @@ jobs:
           file: Dockerfile-backend
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.backend_tags }}
+          tags: ${{ steps.meta.outputs.backend-meta }}
 
       - name: Build & Push the database image
         uses: docker/build-push-action@v4
@@ -98,4 +124,4 @@ jobs:
           file: Dockerfile-postgres
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.postgres_tags }}
+          tags: ${{ steps.meta.outputs.postgres-meta }}
