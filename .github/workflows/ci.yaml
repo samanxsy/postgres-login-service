@@ -108,7 +108,7 @@ jobs:
           file: Dockerfile-frontend
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.frontend-meta }}
+          tags: ${{ steps.frontend-meta.outputs.tags }}
 
       - name: Build & Push the backend image
         uses: docker/build-push-action@v4
@@ -116,7 +116,7 @@ jobs:
           file: Dockerfile-backend
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.backend-meta }}
+          tags: ${{ steps.backend-meta.outputs.tags }}
 
       - name: Build & Push the database image
         uses: docker/build-push-action@v4
@@ -124,4 +124,4 @@ jobs:
           file: Dockerfile-postgres
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.postgres-meta }}
+          tags: ${{ steps.postgres-meta.outputs.tags }}
