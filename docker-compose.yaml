@@ -9,6 +9,11 @@ services:
       - 80:80
     networks:
       - frontend
+    volumes:
+      - ./frontend/:/usr/share/nginx/html
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/nginx.conf
     depends_on:
       - backend
 
@@ -23,6 +28,8 @@ services:
     networks:
       - frontend
       - backend
+    volumes:
+      - ./backend/:/login-system/backend/
     environment:
       - SESSION_KEY=$SESSION_KEY
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
@@ -46,6 +53,7 @@ services:
 
 volumes:
   pgdata:
+
 networks:
   frontend:
   backend:

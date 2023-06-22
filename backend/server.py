@@ -124,7 +124,7 @@ def login():
     # Validating the credentials
     try:
         if username and password:
-            if postgres.user_data_retrieval(
+            if postgres.user_auth(
                 username=username,
                 password=password
             ):
@@ -156,7 +156,19 @@ def auth():
     username = data.get("username")
 
     if "username" in session and session["username"] == username:
-        return jsonify({"status": True, "username": username})
+        data = postgres.user_data_retrieval(username)
+        first_name = data[1]
+        last_name = data[2]
+        email = data[3]
+        return jsonify(
+            {
+                "status": True,
+                "username": username,
+                "first_name": first_name,
+                "last_name": last_name,
+                "email": email
+            }
+        )
 
     else:
         return jsonify({"status": False})

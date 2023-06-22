@@ -13,8 +13,10 @@ $(document).ready(function() {
     success: function(response) {
       if (response.status === true) {
         // User is authenticated, load the username
-        $("#username").text(response.username);
         $('#welcome-message').text('Welcome, ' + username + '!');
+        $("#first_name").text("Name: " + response.first_name);
+        $("#last_name").text("Surname: " + response.last_name);
+        $("#email").text("Email: " + response.email);
       } else {
         // User is not authenticated, redirect to login page
         window.location.href = '/login.html';

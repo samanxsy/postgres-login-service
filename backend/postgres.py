@@ -1,7 +1,7 @@
 import os
+import hashlib
 import psycopg2
 import psycopg2.errors
-import hashlib
 
 
 def database_connection():
@@ -55,7 +55,7 @@ def register_user(first_name, last_name, email, username, password, date_of_birt
     connection.close()
 
 
-def user_data_retrieval(username, password):
+def user_auth(username, password):
     """
     This function will take username and password as arguments, and returns True if the data matches with the databasee
     """
@@ -79,16 +79,36 @@ def user_data_retrieval(username, password):
                 """SELECT * FROM users
                 WHERE username = %s AND password = %s""", (username, hashed_pass)
             )
-            user_data = cursor.fetchone()
             cursor.close()
             connection.close()
 
-            return user_data
+            return True
+    else:
+        return False
 
     cursor.close()
     connection.close()
 
-    return None
+    return False
+
+
+def user_data_retrieval(username):
+    """
+    This function will take username and returns user data
+    """
+    connection = database_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """SELECT * FROM users
+        WHERE username = %s""", (username,)
+    )
+    user_data = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return user_data
 
 
 def delete_user(username):

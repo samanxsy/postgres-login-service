@@ -14,18 +14,20 @@
     <div class="header">
       <a class="logout" href="/logout" class="logout">Logout</a>
     <h3 id="welcome-message"></h3>
-    <h3 id="backend-message"></h3>
     <p id="username"></p>
   </div>
 
-  <div class="text-box">
-    <form method="POST">
-    <textarea id="post-box" maxlength="800" placeholder="What's up?">
-    </textarea>
-    </form>
+  <div class="user-data">
+    <p class="info" id="first_name"></p>
+    <p class="info" id="last_name"></p>
+    <p class="info" id="email"></p>
   </div>
 
-    <div class="profiile-content" id="profile-content"> </div>
+  <form method="POST">
+  <textarea id="postbox" maxlength="600" placeholder="What's in your mind?"></textarea>
+  <button class="post-button" type="submit">Post</button>
+  </form>
+    <div class="user_posts" id="user_posts"> </div>
 
   </body>
 </html>

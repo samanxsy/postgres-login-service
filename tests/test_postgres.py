@@ -3,7 +3,7 @@ import unittest
 import psycopg2
 import psycopg2.errors
 import datetime
-from backend.postgres import database_connection, hash_password, register_user, user_data_retrieval, delete_user
+from backend.postgres import database_connection, hash_password, register_user, user_auth, delete_user, user_data_retrieval
 
 
 class FunctionsTest(unittest.TestCase):
@@ -45,7 +45,7 @@ class FunctionsTest(unittest.TestCase):
 
         register_user(first_name, last_name, email, username, password, date_of_birth)
 
-        user_data = user_data_retrieval(username, password)
+        user_data = user_data_retrieval(username)
         self.assertIsNotNone(user_data)
         self.assertEqual(user_data[1], first_name)
         self.assertEqual(user_data[2], last_name)
@@ -58,28 +58,25 @@ class FunctionsTest(unittest.TestCase):
         with self.assertRaises(psycopg2.errors.NotNullViolation):
             register_user("", "", "", "", "", "")
 
-    def test_user_data_retrieval_valid(self):
+    def test_user_auth_valid(self):
 
         username = "samansaybani"
         password = "passwordis123456"
 
-        user_data = user_data_retrieval(username, password)
-        self.assertIsNotNone(user_data)
-        self.assertEqual(user_data[4], username)
-        self.assertEqual(user_data[5], hash_password(password, user_data[6]))
+        result = user_auth(username, password)
+        self.assertEqual(result, True)
 
-    def test_user_data_retrieval_invalid_credentials(self):
+    def test_user_auth_invalid_credentials(self):
         username = "johndoe"
         password = "incorrect_password"
 
-        user_data = user_data_retrieval(username, password)
-        self.assertIsNone(user_data)
+        result = user_auth(username, password)
+        self.assertEqual(result, False)
 
     def test_delete_user(self):
         username = "samansaybani"
-        password = "passwordis123456"
 
         delete_user(username)
 
-        user_data = user_data_retrieval(username, password)
+        user_data = user_data_retrieval(username)
         self.assertIsNone(user_data)
