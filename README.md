@@ -1,11 +1,11 @@
-# Login Service developed as containerized microservices
+# Login Service
 [![CI](https://github.com/samanxsy/postgres-user-login/actions/workflows/ci.yaml/badge.svg)](https://github.com/samanxsy/postgres-user-login/actions/workflows/ci.yaml)
 [![Known Vulnerabilities](https://snyk.io/test/github/samanxsy/postgres-login-service/badge.svg?style=flat-square)](https://snyk.io/test/github/samanxsy/postgres-login-service)
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-brown.svg)](https://shields.io/)
 [![License](https://img.shields.io/badge/License-MIT-skyblue.svg)](https://mit-license.org/)
 
 ## Features
-- User Registration and Login functionality
+- User Registration and Login Functionality
 - Secure password storage and hashing
 - Session management using Flask-session
 - PostgreSQL database integration for storing user information
