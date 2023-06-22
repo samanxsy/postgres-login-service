@@ -160,7 +160,6 @@ def auth():
         first_name = data[1]
         last_name = data[2]
         email = data[3]
-        date_of_birth = data[7]
         return jsonify(
             {
                 "status": True,
